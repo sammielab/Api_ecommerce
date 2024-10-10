@@ -34,7 +34,7 @@ public class CategoriaController {
         }
     }
 
-    @GetMapping("/find")
+    @GetMapping("/find/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id){
         try{
             Optional<Categoria> categoriaFound = categoriaServicio.findById(id);

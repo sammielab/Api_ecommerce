@@ -49,6 +49,32 @@ public class AuthenticationService {
                 .build();
     }
 
+
+    public AuthenticationResponse registerAdmin(RegisterRequest registerRequest){
+        var user = Usuario.builder()
+                .name(registerRequest.getName())
+                .apellido(registerRequest.getApellido())
+                .email(registerRequest.getEmail())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .role(Role.ADMIN)
+                .build();
+
+        usuarioRepository.save(user);
+
+        // Crea un UserDetails a partir del usuario
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+
+
+        //devolver el token
+
+        var jwt = jwtService.generateToken(new HashMap<>(), userDetails);
+
+        return AuthenticationResponse.builder()
+                .token(jwt)
+                .build();
+    }
+
+
     public AuthenticationResponse login(LoginRequest loginRequest){
         //Delegamos al authentication manager
         authenticationManager.authenticate(
@@ -62,6 +88,7 @@ public class AuthenticationService {
                         .orElseThrow();
 
         var jwt = jwtService.generateToken(user);
+
         return AuthenticationResponse.builder()
                 .token(jwt)
                 .build();

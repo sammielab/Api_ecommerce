@@ -1,5 +1,7 @@
 package proyecto_pd_dh.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,8 +33,6 @@ public class Usuario implements UserDetails {
     @Column(name="apellido")
     private String apellido;
 
-    @Column(name="tipo_usuario")
-    private String tipo_usuario;
 
     @Column(name = "email")
     private String email;
@@ -41,33 +41,49 @@ public class Usuario implements UserDetails {
     private String password;
 
     @ManyToMany
+    @JoinTable(name = "usuarios_productos", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "producto_id"))
     private List<Producto> productosFavoritos;
 
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<Reserva> reservas;
+
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Recomendacion> puntuaciones;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
-
-    public Usuario(String name, String apellido, String tipo_usuario, String email, String password) {
-        this.name = name;
-        this.apellido = apellido;
-        this.tipo_usuario = tipo_usuario;
-        this.email = email;
-        this.password = password;
+    @OneToMany
+    public List<Reserva> getReservas() {
+        return reservas;
     }
 
-    public Usuario(Integer id, String name, String apellido, String tipo_usuario, String email, String password, List<Producto> productosFavoritos, List<Recomendacion> puntuaciones) {
-        this.id = id;
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
+
+    public Usuario(String name, String apellido, String email, String password, Role role) {
         this.name = name;
         this.apellido = apellido;
-        this.tipo_usuario = tipo_usuario;
         this.email = email;
         this.password = password;
-        this.productosFavoritos = productosFavoritos;
-        this.puntuaciones = puntuaciones;
+        this.role = role;
+    }
+
+
+    public Usuario(Integer id,  List<Producto> productosFavoritos){
+        setProductosFavoritos(productosFavoritos);
+    }
+
+
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public Integer getId() {
@@ -94,13 +110,6 @@ public class Usuario implements UserDetails {
         this.apellido = apellido;
     }
 
-    public String getTipo_usuario() {
-        return tipo_usuario;
-    }
-
-    public void setTipo_usuario(String tipo_usuario) {
-        this.tipo_usuario = tipo_usuario;
-    }
 
     public String getEmail() {
         return email;
@@ -163,4 +172,6 @@ public class Usuario implements UserDetails {
     public void setPuntuaciones(List<Recomendacion> puntuaciones) {
         this.puntuaciones = puntuaciones;
     }
+
+
 }

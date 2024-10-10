@@ -1,14 +1,18 @@
 package proyecto_pd_dh.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import proyecto_pd_dh.entities.Caracteristica;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Usuario;
 import proyecto_pd_dh.service.ProductoServicio;
 import proyecto_pd_dh.service.UsuarioServicio;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +31,7 @@ public class ProductoController {
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody Producto producto ){
         try{
+
             Producto savedProducto = productoServicio.save(producto);
             return ResponseEntity.ok(savedProducto);
 
@@ -48,6 +53,14 @@ public class ProductoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error" + e.getMessage());
         }
 
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<Producto>> getdAll(
+            @RequestParam int page,
+            @RequestParam int limit
+    ){
+        return ResponseEntity.ok(productoServicio.getAll(page, limit));
     }
 
     @GetMapping("/findAll")
@@ -77,7 +90,7 @@ public class ProductoController {
             Optional<Producto> producFound = productoServicio.findById(id);
             if(producFound.isPresent()){
                 productoServicio.delete(id);
-                return ResponseEntity.ok(producFound);
+                return ResponseEntity.ok("Producto eliminado correctamente");
             }else{
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
             }

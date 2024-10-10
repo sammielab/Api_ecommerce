@@ -1,6 +1,9 @@
 package proyecto_pd_dh.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -20,8 +23,9 @@ public class Producto {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name="caracteristicas")
-    private String caracteristicas;
+    @ManyToMany
+    @JoinTable(name = "producto_caracteristicas", joinColumns = @JoinColumn(name = "producto_id"), inverseJoinColumns = @JoinColumn(name = "caracteristica_id"))
+    private List<Caracteristica> caracteristicas;
 
     @Column(name="disponibilidad")
     private String disponibilidad;
@@ -32,20 +36,23 @@ public class Producto {
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
     private List<Recomendacion> recomendaciones;
 
+    @ManyToMany(mappedBy = "productos", cascade = CascadeType.ALL)
+    private List<Catalogo> catalogos;
+
     @ManyToOne
-    private Catalogo catalogo;
-
-
-    @OneToOne
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    private List<Reserva> reservas;
+
+    @ManyToMany(mappedBy = "productosFavoritos")
     private List<Usuario> usuarios;
 
 
     public Producto(){}
 
-    public Producto(Integer id, String titulo, String descripcion, String caracteristicas, String disponibilidad, Double precio, List<Recomendacion> recomendaciones, Catalogo catalogo, Categoria categoria, List<Usuario> usuarios) {
+    public Producto(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, String disponibilidad, Double precio, List<Recomendacion> recomendaciones, Catalogo catalogo, Categoria categoria, List<Usuario> usuarios) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -53,12 +60,11 @@ public class Producto {
         this.disponibilidad = disponibilidad;
         this.precio = precio;
         this.recomendaciones = recomendaciones;
-        this.catalogo = catalogo;
         this.categoria = categoria;
         this.usuarios = usuarios;
     }
 
-    public Producto(String titulo, String descripcion, String caracteristicas, String disponibilidad, Double precio) {
+    public Producto(String titulo, String descripcion, List<Caracteristica> caracteristicas, String disponibilidad, Double precio) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.caracteristicas = caracteristicas;
@@ -66,9 +72,19 @@ public class Producto {
         this.precio = precio;
     }
 
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
+
     public Integer getId() {
         return id;
     }
+
 
     public void setId(Integer id) {
         this.id = id;
@@ -90,11 +106,11 @@ public class Producto {
         this.descripcion = descripcion;
     }
 
-    public String getCaracteristicas() {
+    public List<Caracteristica> getCaracteristicas() {
         return caracteristicas;
     }
 
-    public void setCaracteristicas(String caracteristicas) {
+    public void setCaracteristicas(List<Caracteristica> caracteristicas) {
         this.caracteristicas = caracteristicas;
     }
 
@@ -122,13 +138,6 @@ public class Producto {
         this.recomendaciones = recomendaciones;
     }
 
-    public Catalogo getCatalogo() {
-        return catalogo;
-    }
-
-    public void setCatalogo(Catalogo catalogo) {
-        this.catalogo = catalogo;
-    }
 
     public Categoria getCategoria() {
         return categoria;
@@ -145,4 +154,7 @@ public class Producto {
     public void setUsuarios(List<Usuario> usuarios) {
         this.usuarios = usuarios;
     }
+
+
+
 }

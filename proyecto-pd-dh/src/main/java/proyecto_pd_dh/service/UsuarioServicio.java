@@ -7,6 +7,7 @@ import proyecto_pd_dh.entities.Usuario;
 import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.repository.IUsuarioRepository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,14 +25,14 @@ public class UsuarioServicio {
 
     public UsuarioDTO save(UsuarioDTO usuarioDTO){
         //mappeo de dto
-        Usuario usuarioEntity = new Usuario( usuarioDTO.getName(), usuarioDTO.getApellido(),usuarioDTO.getTipo_usuario(), usuarioDTO.getEmail(), usuarioDTO.getPassword());
+        Usuario usuarioEntity = new Usuario( usuarioDTO.getName(), usuarioDTO.getApellido(), usuarioDTO.getEmail(), usuarioDTO.getPassword(), usuarioDTO.getTipo_usuario());
         usuarioRepository.save(usuarioEntity);
 
         UsuarioDTO returnUsuarioDTO = new UsuarioDTO();
         returnUsuarioDTO.setId(usuarioEntity.getId());
         returnUsuarioDTO.setName(usuarioEntity.getName());
         returnUsuarioDTO.setApellido(usuarioEntity.getApellido());
-        returnUsuarioDTO.setTipo_usuario(usuarioEntity.getTipo_usuario());
+        returnUsuarioDTO.setTipo_usuario(usuarioEntity.getRole());
         returnUsuarioDTO.setEmail(usuarioEntity.getEmail());
 
         return returnUsuarioDTO;
@@ -41,7 +42,9 @@ public class UsuarioServicio {
         return usuarioRepository.findById(id);
     }
 
-
+    public Optional<Usuario>findByEmail(String email){
+        return usuarioRepository.findByEmail(email);
+    }
 
     public List<Usuario> findAll(){
         return usuarioRepository.findAll();

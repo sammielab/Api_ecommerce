@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import proyecto_pd_dh.dto.UsuarioDTO;
 import proyecto_pd_dh.entities.Usuario;
 import proyecto_pd_dh.exception.ResourceNotFoundException;
@@ -16,12 +17,14 @@ import java.util.Optional;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
+
     private final UsuarioServicio usuarioService;
 
     @Autowired
     public UsuarioController(UsuarioServicio usuarioService) {
         this.usuarioService = usuarioService;
     }
+
 
     @PostMapping("/save")
     public ResponseEntity<UsuarioDTO> save(@RequestBody UsuarioDTO usuarioDTO){
@@ -38,7 +41,7 @@ public class UsuarioController {
         return response;
     }
 
-    @GetMapping("/find")
+    @GetMapping("/find/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id){
         try{
            Optional<Usuario> foundedUsuario = usuarioService.findById(id);
@@ -52,6 +55,17 @@ public class UsuarioController {
         }
 
     }
+
+    @GetMapping("/findByEmail")
+    public ResponseEntity<?> findByEmail(@RequestParam String email){
+        try{
+            Optional<Usuario> userFound = Optional.ofNullable(usuarioService.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "usuario no encontrado")));
+            return ResponseEntity.ok(userFound);
+            }catch(Exception e){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        }
+
 
     @GetMapping("/findAll")
     public ResponseEntity<List<Usuario>> findAll(){

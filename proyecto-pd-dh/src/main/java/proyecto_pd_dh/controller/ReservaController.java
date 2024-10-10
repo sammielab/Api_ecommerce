@@ -1,14 +1,18 @@
 package proyecto_pd_dh.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import proyecto_pd_dh.dto.ProductoDTO;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Reserva;
 import proyecto_pd_dh.service.ProductoServicio;
 import proyecto_pd_dh.service.ReservaServicio;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,18 +40,18 @@ public class ReservaController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity<?> findById(@PathVariable Integer id){
+    public ResponseEntity<List<ProductoDTO>> findById(@RequestParam LocalDate checkin, @RequestParam LocalDate checkout){
         try{
-            Optional<Reserva> foundedReserva = reservaServicio.findById(id);
-            if(foundedReserva.isPresent()){
-                return  ResponseEntity.ok(foundedReserva.get());
+            Optional<List<ProductoDTO>> reserva = reservaServicio.findByDate(checkin, checkout);
+
+            if(reserva.isPresent()){
+                return  ResponseEntity.ok(reserva.get());
             }else{
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error" + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
-
     }
 
     @GetMapping("/findAll")

@@ -3,6 +3,7 @@ package proyecto_pd_dh.dto;
 import jakarta.persistence.*;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Recomendacion;
+import proyecto_pd_dh.entities.Role;
 
 import java.util.List;
 
@@ -14,8 +15,6 @@ public class UsuarioDTO {
 
     private String apellido;
 
-    private String tipo_usuario;
-
     private String email;
 
     private String password;
@@ -23,6 +22,8 @@ public class UsuarioDTO {
     private List<Producto> productosFavoritos;
 
     private List<Recomendacion> puntuaciones;
+
+    private Role role;
 
     public UsuarioDTO() {
     }
@@ -59,12 +60,12 @@ public class UsuarioDTO {
         this.apellido = apellido;
     }
 
-    public String getTipo_usuario() {
-        return tipo_usuario;
+    public Role getTipo_usuario() {
+        return role;
     }
 
-    public void setTipo_usuario(String tipo_usuario) {
-        this.tipo_usuario = tipo_usuario;
+    public void setTipo_usuario(Role role) {
+        this.role = role;
     }
 
     public String getEmail() {
