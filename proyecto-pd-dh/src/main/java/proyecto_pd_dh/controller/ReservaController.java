@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import proyecto_pd_dh.dto.ProductoDTO;
+import proyecto_pd_dh.dto.ReservaDTO;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Reserva;
 import proyecto_pd_dh.service.ProductoServicio;
@@ -51,6 +52,20 @@ public class ReservaController {
             }
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+        }
+    }
+
+    @GetMapping("/findUser/{id}")
+    public ResponseEntity<Optional<List<ReservaDTO>>> findByUsuarioId(@PathVariable Integer id){
+        try{
+            Optional<List<ReservaDTO>> reservas = reservaServicio.findByUsuarioId(id);
+            if(reservas.isPresent()){
+                return  ResponseEntity.ok(Optional.of(reservas.get()));
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Optional.empty());
         }
     }
 

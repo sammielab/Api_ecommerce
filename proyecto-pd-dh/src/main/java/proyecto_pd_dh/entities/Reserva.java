@@ -37,6 +37,9 @@ public class Reserva {
     @Column(name = "check_out")
     private LocalDate check_out;
 
+    @Column(name = "fecha_reserva")
+    private LocalDate fecha_reserva;
+
     @Column(name = "estado")
     private String estado;
 

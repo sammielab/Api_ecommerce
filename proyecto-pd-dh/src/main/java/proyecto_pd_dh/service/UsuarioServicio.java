@@ -42,8 +42,28 @@ public class UsuarioServicio {
         return usuarioRepository.findById(id);
     }
 
-    public Optional<Usuario>findByEmail(String email){
-        return usuarioRepository.findByEmail(email);
+    public Optional<UsuarioDTO>findByEmail(String email) throws ResourceNotFoundException {
+        Optional<Usuario> usuarioFound = usuarioRepository.findByEmail(email);
+        Optional<UsuarioDTO> userDTO;
+
+        if(usuarioFound.isPresent()){
+
+            UsuarioDTO usuarioDTO = new UsuarioDTO();
+
+            usuarioDTO.setId(usuarioFound.get().getId());
+            usuarioDTO.setEmail(usuarioFound.get().getEmail());
+            usuarioDTO.setPassword(usuarioFound.get().getPassword());
+            usuarioDTO.setName(usuarioFound.get().getName());
+            usuarioDTO.setApellido(usuarioFound.get().getApellido());
+            usuarioDTO.setProductosFavoritos(usuarioFound.get().getProductosFavoritos());
+            usuarioDTO.setPuntuaciones(usuarioFound.get().getPuntuaciones());
+
+            userDTO = Optional.of(usuarioDTO);
+            return userDTO;
+        }else {
+            throw  new ResourceNotFoundException("No se encontro el usuario con email" + email);
+        }
+
     }
 
     public List<Usuario> findAll(){

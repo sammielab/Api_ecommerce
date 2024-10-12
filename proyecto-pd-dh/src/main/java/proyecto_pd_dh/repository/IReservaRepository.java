@@ -15,4 +15,5 @@ public interface IReservaRepository extends JpaRepository<Reserva, Integer> {
             "(:startDate <= r.check_out AND :endDate >= r.check_in)"
     )
     Optional<List<Integer>> findUnavaibleProducts(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    Optional<List<Reserva>> findByUsuarioId(Integer id);
 }

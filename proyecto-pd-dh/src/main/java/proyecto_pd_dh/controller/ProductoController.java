@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import proyecto_pd_dh.dto.ProductoDTO;
 import proyecto_pd_dh.entities.Caracteristica;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Usuario;
@@ -43,14 +44,14 @@ public class ProductoController {
     @GetMapping("/find/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id){
         try{
-            Optional<Producto> foundedProduct = productoServicio.findById(id);
+            Optional<ProductoDTO> foundedProduct = productoServicio.findById(id);
             if(foundedProduct.isPresent()){
                 return  ResponseEntity.ok(foundedProduct.get());
             }else{
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error" + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
 
     }

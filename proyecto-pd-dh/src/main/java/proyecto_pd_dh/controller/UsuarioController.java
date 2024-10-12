@@ -57,14 +57,17 @@ public class UsuarioController {
     }
 
     @GetMapping("/findByEmail")
-    public ResponseEntity<?> findByEmail(@RequestParam String email){
-        try{
-            Optional<Usuario> userFound = Optional.ofNullable(usuarioService.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "usuario no encontrado")));
+    public ResponseEntity<UsuarioDTO> findByEmail(@RequestParam String email) {
+        try {
+            UsuarioDTO userFound = usuarioService.findByEmail(email)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
             return ResponseEntity.ok(userFound);
-            }catch(Exception e){
-            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        }
+    }
 
 
     @GetMapping("/findAll")

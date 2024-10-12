@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import proyecto_pd_dh.dto.ProductoDTO;
+import proyecto_pd_dh.dto.ReservaDTO;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Recomendacion;
 import proyecto_pd_dh.entities.Reserva;
@@ -72,7 +73,7 @@ public class ReservaServicio {
         if(unavaibleProducts.isPresent()){
             Optional<List<Producto>> avaiableProducts = Optional.ofNullable(productoRepository.findProductsNotInIds(unavaibleProducts));
 
-            System.out.println(avaiableProducts);
+
             if(avaiableProducts.isPresent()){
                 List<ProductoDTO> productsToReturn = new ArrayList<>();
 
@@ -109,6 +110,29 @@ public class ReservaServicio {
         }
     };
 
+    public Optional<List<ReservaDTO>> findByUsuarioId(Integer id) throws Exception {
+      Optional<List<Reserva>> reservas =  reservaRepository.findByUsuarioId(id);
+
+        if(reservas.isPresent()){
+
+            List<ReservaDTO> reservaDTOS = new ArrayList<>();
+
+            for(Reserva reserva : reservas.get()){
+                ReservaDTO resDTO = ReservaToDto(reserva);
+                resDTO.setId_producto(reserva.getProducto().getId());
+                resDTO.setId_usuario(reserva.getUsuario().getId());
+                reservaDTOS.add(resDTO);
+            }
+
+            return Optional.of(reservaDTOS);
+
+        }else{
+            throw new Exception("No se encuentran reservas disponibles");
+        }
+    }
+    public ReservaDTO ReservaToDto(Reserva rsv) {
+        return modelMapper.map(rsv, ReservaDTO.class);
+    }
 
     public ProductoDTO convertToDto(Producto producto) {
         return modelMapper.map(producto, ProductoDTO.class);
