@@ -13,12 +13,12 @@ public class ProductoDTO {
     private String descripcion;
     private List<Caracteristica> caracteristicas;
     private Double precio;
-    private List<Recomendacion> recomendaciones;
+    private List<RecomendacionDTO> recomendaciones;
     private Categoria categoria;
 
     public ProductoDTO(){};
 
-    public ProductoDTO(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, Double precio, List<Recomendacion> recomendaciones, Categoria categoria) {
+    public ProductoDTO(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, Double precio, List<RecomendacionDTO> recomendaciones, Categoria categoria) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -69,11 +69,11 @@ public class ProductoDTO {
         this.precio = precio;
     }
 
-    public List<Recomendacion> getRecomendaciones() {
+    public List<RecomendacionDTO> getRecomendaciones() {
         return recomendaciones;
     }
 
-    public void setRecomendaciones(List<Recomendacion> recomendaciones) {
+    public void setRecomendaciones(List<RecomendacionDTO> recomendaciones) {
         this.recomendaciones = recomendaciones;
     }
 

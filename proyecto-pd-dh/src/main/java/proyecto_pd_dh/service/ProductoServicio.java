@@ -8,8 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import proyecto_pd_dh.dto.ProductoDTO;
+import proyecto_pd_dh.dto.RecomendacionDTO;
 import proyecto_pd_dh.entities.Caracteristica;
 import proyecto_pd_dh.entities.Producto;
+import proyecto_pd_dh.entities.Recomendacion;
 import proyecto_pd_dh.entities.Usuario;
 import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.repository.IProductoRepository;
@@ -17,6 +19,8 @@ import proyecto_pd_dh.repository.IProductoRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductoServicio {
@@ -57,12 +61,26 @@ public class ProductoServicio {
         if(productoFound.isPresent()){
             ProductoDTO productoDTO = new ProductoDTO();
 
+            List<RecomendacionDTO> recomendacionesMapp = productoFound.get().getRecomendaciones()
+                    .stream()
+                    .map(recomendacion -> {
+                        RecomendacionDTO rec = new RecomendacionDTO();
+                        rec.setId(recomendacion.getId());
+                        rec.setPuntaje_total(recomendacion.getPuntaje_total());
+                        rec.setDescripcion(recomendacion.getDescripcion());
+                        rec.setFecha_publicacion(recomendacion.getFecha_publicacion());
+                        rec.setProducto_id(recomendacion.getProducto().getId());
+                        rec.setUsuario_id(recomendacion.getUsuario().getId());
+                        return rec;
+                    })
+                    .toList();
+
             productoDTO.setId(productoFound.get().getId());
             productoDTO.setTitulo(productoFound.get().getTitulo());
             productoDTO.setPrecio(productoFound.get().getPrecio());
             productoDTO.setCaracteristicas(productoFound.get().getCaracteristicas());
             productoDTO.setDescripcion(productoFound.get().getDescripcion());
-            productoDTO.setRecomendaciones(productoFound.get().getRecomendaciones());
+            productoDTO.setRecomendaciones(recomendacionesMapp);
             productoDTO.setCategoria(productoFound.get().getCategoria());
 
             productoReturn = Optional.of(productoDTO);
@@ -72,11 +90,32 @@ public class ProductoServicio {
         }
     }
 
-    public List<Producto> findAll(){
-        return productoRepository.findAll();
+    public List<ProductoDTO> findAll() throws ResourceNotFoundException {
+
+        List<Producto> productos = productoRepository.findAll();
+        List<ProductoDTO> productoDTOS = new ArrayList<>();
+        if(!productos.isEmpty()){
+            for(Producto p : productos){
+                ProductoDTO pDTO = new ProductoDTO();
+
+                pDTO.setId(p.getId());
+                pDTO.setTitulo(p.getTitulo());
+                pDTO.setDescripcion(p.getDescripcion());
+                pDTO.setCaracteristicas(p.getCaracteristicas());
+                pDTO.setCategoria(p.getCategoria());
+                pDTO.setPrecio(p.getPrecio());
+
+                productoDTOS.add(pDTO);
+
+            }
+
+            return productoDTOS;
+        }else{
+            throw new ResourceNotFoundException("No se encontraron productos disponibles");
+        }
     };
 
-    public List<Producto> getAll(int page, int limit){
+    public List<ProductoDTO> getAll(int page, int limit){
 
         List<Producto> productos = productoRepository.findAll();
         int total = productos.size();
@@ -92,7 +131,23 @@ public class ProductoServicio {
         }
 
         int endIndex = Math.min(startIndex + limit, total);
-        return productos.subList(startIndex, endIndex);
+
+
+        List<ProductoDTO> productosDTO = productos.subList(startIndex, endIndex).stream()
+                .map(producto -> {
+                    ProductoDTO productoDTO = new ProductoDTO();
+                    productoDTO.setId(producto.getId());
+                    productoDTO.setTitulo(producto.getTitulo());
+                    productoDTO.setPrecio(producto.getPrecio());
+                    productoDTO.setCaracteristicas(producto.getCaracteristicas());
+                    productoDTO.setDescripcion(producto.getDescripcion());
+                    productoDTO.setCategoria(producto.getCategoria());
+                    return productoDTO;
+                })
+                .toList(); // Recolectamos en una lista
+
+        return productosDTO;
+
     }
 
     public Producto update(Producto producto){

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import proyecto_pd_dh.dto.RecomendacionDTO;
 import proyecto_pd_dh.entities.Recomendacion;
 import proyecto_pd_dh.entities.Reserva;
 import proyecto_pd_dh.service.RecomendacionServicio;
@@ -26,7 +27,7 @@ public class RecomendacionController {
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody Recomendacion recomendacion ){
         try{
-            Recomendacion savedRecomendacion = recomendacionServicio.save(recomendacion);
+            RecomendacionDTO savedRecomendacion = recomendacionServicio.save(recomendacion);
             return ResponseEntity.ok(savedRecomendacion);
 
         }catch(Exception e){

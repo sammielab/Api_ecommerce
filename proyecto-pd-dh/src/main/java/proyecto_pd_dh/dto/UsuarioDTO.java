@@ -21,7 +21,7 @@ public class UsuarioDTO {
 
     private List<Producto> productosFavoritos;
 
-    private List<Recomendacion> puntuaciones;
+    private List<Integer> puntuaciones;
 
     private Role role;
 
@@ -84,11 +84,11 @@ public class UsuarioDTO {
         this.productosFavoritos = productosFavoritos;
     }
 
-    public List<Recomendacion> getPuntuaciones() {
+    public List<Integer> getPuntuaciones() {
         return puntuaciones;
     }
 
-    public void setPuntuaciones(List<Recomendacion> puntuaciones) {
+    public void setPuntuaciones(List<Integer> puntuaciones) {
         this.puntuaciones = puntuaciones;
     }
 }

@@ -25,11 +25,11 @@ public class Recomendacion {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "producto_id")
     @ManyToOne
     private Producto producto;
 
-    @JoinColumn(name = "producto_id")
+    @JoinColumn(name = "usuario_id")
     @ManyToOne
     private Usuario usuario;
 
@@ -80,5 +80,21 @@ public class Recomendacion {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public Date getFecha_publicacion() {
+        return fecha_publicacion;
+    }
+
+    public void setFecha_publicacion(Date fecha_publicacion) {
+        this.fecha_publicacion = fecha_publicacion;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }

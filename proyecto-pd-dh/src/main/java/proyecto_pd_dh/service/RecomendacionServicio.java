@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import proyecto_pd_dh.dto.RecomendacionDTO;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Recomendacion;
 import proyecto_pd_dh.entities.Usuario;
@@ -26,17 +27,30 @@ public class RecomendacionServicio {
     private final IProductoRepository productoRepository;
 
 
-    public Recomendacion save(Recomendacion recomendacion) throws ResourceNotFoundException {
+    public RecomendacionDTO save(Recomendacion recomendacion) throws ResourceNotFoundException {
 
         Producto producto = productoRepository.findById(recomendacion.getProducto().getId()).orElseThrow(()->new ResourceNotFoundException("Producto no encontrado"));
         Usuario usuario = usuarioRepository.findById(recomendacion.getUsuario().getId()).orElseThrow(()-> new ResourceNotFoundException("No se encontro el usuario"));
 
         Recomendacion recomendation = new Recomendacion();
+        recomendation.setId((recomendacion.getId()));
         recomendation.setProducto(producto);
         recomendation.setUsuario(usuario);
         recomendation.setPuntaje_total(recomendacion.getPuntaje_total());
+        recomendation.setFecha_publicacion(recomendacion.getFecha_publicacion());
+        recomendation.setDescripcion(recomendacion.getDescripcion());
 
-         return recomendacionRepository.save(recomendacion);
+        recomendacionRepository.save(recomendation);
+
+        RecomendacionDTO recomendacionDTO = new RecomendacionDTO();
+        recomendacionDTO.setId(recomendation.getId());
+        recomendacionDTO.setUsuario_id(recomendation.getUsuario().getId());
+        recomendacionDTO.setProducto_id(recomendation.getProducto().getId());
+        recomendacionDTO.setDescripcion(recomendacion.getDescripcion());
+        recomendacionDTO.setPuntaje_total(recomendacion.getPuntaje_total());
+        recomendacionDTO.setFecha_publicacion(recomendacion.getFecha_publicacion());
+
+        return recomendacionDTO;
     }
 
     public Optional<Recomendacion> findById(Integer id){

@@ -10,6 +10,7 @@ import proyecto_pd_dh.dto.ProductoDTO;
 import proyecto_pd_dh.entities.Caracteristica;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Usuario;
+import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.service.ProductoServicio;
 import proyecto_pd_dh.service.UsuarioServicio;
 
@@ -57,7 +58,7 @@ public class ProductoController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Producto>> getdAll(
+    public ResponseEntity<List<ProductoDTO>> getdAll(
             @RequestParam int page,
             @RequestParam int limit
     ){
@@ -65,14 +66,19 @@ public class ProductoController {
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity<List<Producto>> findAll(){
-        return ResponseEntity.ok(productoServicio.findAll());
+    public ResponseEntity<List<ProductoDTO>> findAll() throws ResourceNotFoundException {
+        try{
+            List<ProductoDTO> productoDTOS = productoServicio.findAll();
+            return ResponseEntity.ok(productoDTOS);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody Producto producto){
         try{
-            Optional<Producto> productFound = productoServicio.findById(producto.getId());
+            Optional<ProductoDTO> productFound = productoServicio.findById(producto.getId());
             if(productFound.isPresent()){
                 productoServicio.update(producto);
                 return ResponseEntity.ok(producto);
@@ -88,7 +94,7 @@ public class ProductoController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id){
         try{
-            Optional<Producto> producFound = productoServicio.findById(id);
+            Optional<ProductoDTO> producFound = productoServicio.findById(id);
             if(producFound.isPresent()){
                 productoServicio.delete(id);
                 return ResponseEntity.ok("Producto eliminado correctamente");

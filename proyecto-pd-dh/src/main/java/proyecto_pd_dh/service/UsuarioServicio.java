@@ -3,6 +3,7 @@ package proyecto_pd_dh.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyecto_pd_dh.dto.UsuarioDTO;
+import proyecto_pd_dh.entities.Recomendacion;
 import proyecto_pd_dh.entities.Usuario;
 import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.repository.IUsuarioRepository;
@@ -10,6 +11,7 @@ import proyecto_pd_dh.repository.IUsuarioRepository;
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioServicio {
@@ -38,9 +40,23 @@ public class UsuarioServicio {
         return returnUsuarioDTO;
     }
 
-    public Optional<Usuario> findById(Integer id){
-        return usuarioRepository.findById(id);
-    }
+    public Optional<UsuarioDTO> findById(Integer id){
+       Optional<Usuario> usuarioFound =  usuarioRepository.findById(id);
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+
+       if(usuarioFound.isPresent()){
+
+           usuarioDTO.setId(usuarioFound.get().getId());
+           usuarioDTO.setTipo_usuario(usuarioFound.get().getRole());
+           usuarioDTO.setName(usuarioFound.get().getName());
+           usuarioDTO.setApellido(usuarioFound.get().getApellido());
+           usuarioDTO.setEmail(usuarioFound.get().getEmail());
+           usuarioDTO.setPassword(usuarioFound.get().getPassword());
+
+       }
+        return Optional.of(usuarioDTO);
+
+    };
 
     public Optional<UsuarioDTO>findByEmail(String email) throws ResourceNotFoundException {
         Optional<Usuario> usuarioFound = usuarioRepository.findByEmail(email);
@@ -50,13 +66,18 @@ public class UsuarioServicio {
 
             UsuarioDTO usuarioDTO = new UsuarioDTO();
 
+            List<Integer> puntuacionesIds = usuarioFound.get().getPuntuaciones().stream()
+                    .map(Recomendacion::getId)
+                    .collect(Collectors.toList());
+
+
             usuarioDTO.setId(usuarioFound.get().getId());
             usuarioDTO.setEmail(usuarioFound.get().getEmail());
             usuarioDTO.setPassword(usuarioFound.get().getPassword());
             usuarioDTO.setName(usuarioFound.get().getName());
             usuarioDTO.setApellido(usuarioFound.get().getApellido());
             usuarioDTO.setProductosFavoritos(usuarioFound.get().getProductosFavoritos());
-            usuarioDTO.setPuntuaciones(usuarioFound.get().getPuntuaciones());
+            usuarioDTO.setPuntuaciones(puntuacionesIds);
 
             userDTO = Optional.of(usuarioDTO);
             return userDTO;

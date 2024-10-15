@@ -44,7 +44,7 @@ public class UsuarioController {
     @GetMapping("/find/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id){
         try{
-           Optional<Usuario> foundedUsuario = usuarioService.findById(id);
+           Optional<UsuarioDTO> foundedUsuario = usuarioService.findById(id);
            if(foundedUsuario.isPresent()){
                return  ResponseEntity.ok(foundedUsuario.get());
            }else{
@@ -78,7 +78,7 @@ public class UsuarioController {
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody Usuario usuario){
         try{
-            Optional<Usuario> userFound = usuarioService.findById(usuario.getId());
+            Optional<UsuarioDTO> userFound = usuarioService.findById(usuario.getId());
             if(userFound.isPresent()){
                 usuarioService.update(usuario);
                 return ResponseEntity.ok(usuario);

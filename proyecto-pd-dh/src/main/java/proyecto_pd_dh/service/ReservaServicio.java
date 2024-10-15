@@ -86,8 +86,6 @@ public class ReservaServicio {
                     productoDTO.setDescripcion(product.getDescripcion());
                     productoDTO.setCaracteristicas(product.getCaracteristicas());
                     productoDTO.setPrecio(product.getPrecio());
-                    productoDTO.setRecomendaciones(product.getRecomendaciones());
-
                     productsToReturn.add(productoDTO);
 
 
