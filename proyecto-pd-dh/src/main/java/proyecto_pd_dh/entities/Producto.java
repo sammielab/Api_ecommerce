@@ -5,9 +5,16 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "productos")
 public class Producto {
@@ -49,8 +56,12 @@ public class Producto {
     @ManyToMany(mappedBy = "productosFavoritos")
     private List<Usuario> usuarios;
 
+    @ManyToOne
+    @JoinColumn(name = "ubicacion_id")
+    private Ubicacion ubicacion;
 
-    public Producto(){}
+
+
 
     public Producto(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, String disponibilidad, Double precio, List<Recomendacion> recomendaciones, Catalogo catalogo, Categoria categoria, List<Usuario> usuarios) {
         this.id = id;
