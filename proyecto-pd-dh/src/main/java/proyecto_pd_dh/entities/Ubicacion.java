@@ -26,7 +26,7 @@ public class Ubicacion {
     private String ciudad;
 
     @Column(name = "productos")
-    @OneToMany(mappedBy = 'ubicacion')
+    @OneToMany(mappedBy = "ubicacion")
     private List<Producto> productos;
 
 }

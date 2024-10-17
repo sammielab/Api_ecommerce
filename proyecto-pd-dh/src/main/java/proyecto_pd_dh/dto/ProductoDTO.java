@@ -28,6 +28,12 @@ public class ProductoDTO {
         this.categoria = categoria;
     }
 
+    public ProductoDTO(Integer id, String titulo, String descripcion) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+    }
+
     public Integer getId() {
         return id;
     }

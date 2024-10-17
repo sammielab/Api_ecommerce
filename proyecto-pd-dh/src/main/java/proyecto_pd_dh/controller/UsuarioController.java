@@ -80,8 +80,8 @@ public class UsuarioController {
         try{
             Optional<UsuarioDTO> userFound = usuarioService.findById(usuario.getId());
             if(userFound.isPresent()){
-                usuarioService.update(usuario);
-                return ResponseEntity.ok(usuario);
+                var usuarioSaved = usuarioService.update(usuario);
+                return ResponseEntity.ok(usuarioSaved);
             }else{
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
             }

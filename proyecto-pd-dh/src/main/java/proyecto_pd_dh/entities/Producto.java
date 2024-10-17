@@ -34,8 +34,6 @@ public class Producto {
     @JoinTable(name = "producto_caracteristicas", joinColumns = @JoinColumn(name = "producto_id"), inverseJoinColumns = @JoinColumn(name = "caracteristica_id"))
     private List<Caracteristica> caracteristicas;
 
-    @Column(name="disponibilidad")
-    private String disponibilidad;
 
     @Column(name="precio")
     private Double precio;
@@ -63,12 +61,11 @@ public class Producto {
 
 
 
-    public Producto(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, String disponibilidad, Double precio, List<Recomendacion> recomendaciones, Catalogo catalogo, Categoria categoria, List<Usuario> usuarios) {
+    public Producto(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, Double precio, List<Recomendacion> recomendaciones, Catalogo catalogo, Categoria categoria, List<Usuario> usuarios) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.caracteristicas = caracteristicas;
-        this.disponibilidad = disponibilidad;
         this.precio = precio;
         this.recomendaciones = recomendaciones;
         this.categoria = categoria;
@@ -79,8 +76,12 @@ public class Producto {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.caracteristicas = caracteristicas;
-        this.disponibilidad = disponibilidad;
         this.precio = precio;
+    }
+
+    public Producto(String titulo, String descripcion) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
     }
 
 
@@ -123,14 +124,6 @@ public class Producto {
 
     public void setCaracteristicas(List<Caracteristica> caracteristicas) {
         this.caracteristicas = caracteristicas;
-    }
-
-    public String getDisponibilidad() {
-        return disponibilidad;
-    }
-
-    public void setDisponibilidad(String disponibilidad) {
-        this.disponibilidad = disponibilidad;
     }
 
     public Double getPrecio() {

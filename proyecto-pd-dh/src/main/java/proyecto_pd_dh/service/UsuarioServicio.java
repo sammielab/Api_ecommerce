@@ -1,18 +1,24 @@
 package proyecto_pd_dh.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import proyecto_pd_dh.dto.ProductoDTO;
 import proyecto_pd_dh.dto.UsuarioDTO;
 import proyecto_pd_dh.entities.Recomendacion;
 import proyecto_pd_dh.entities.Usuario;
 import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.repository.IUsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.swing.text.html.Option;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class UsuarioServicio {
 
@@ -20,10 +26,12 @@ public class UsuarioServicio {
     private  IUsuarioRepository usuarioRepository;
 
     @Autowired
-    public UsuarioServicio(IUsuarioRepository usuarioRepository){
+    public UsuarioServicio(IUsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder){
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioDTO save(UsuarioDTO usuarioDTO){
         //mappeo de dto
@@ -42,16 +50,16 @@ public class UsuarioServicio {
 
     public Optional<UsuarioDTO> findById(Integer id){
        Optional<Usuario> usuarioFound =  usuarioRepository.findById(id);
-        UsuarioDTO usuarioDTO = new UsuarioDTO();
+       UsuarioDTO usuarioDTO = new UsuarioDTO();
 
        if(usuarioFound.isPresent()){
-
            usuarioDTO.setId(usuarioFound.get().getId());
            usuarioDTO.setTipo_usuario(usuarioFound.get().getRole());
            usuarioDTO.setName(usuarioFound.get().getName());
            usuarioDTO.setApellido(usuarioFound.get().getApellido());
            usuarioDTO.setEmail(usuarioFound.get().getEmail());
-           usuarioDTO.setPassword(usuarioFound.get().getPassword());
+           usuarioDTO.setPassword(passwordEncoder.encode(usuarioFound.get().getPassword()));
+           usuarioDTO.setRole(usuarioFound.get().getRole());
 
        }
         return Optional.of(usuarioDTO);
@@ -70,14 +78,16 @@ public class UsuarioServicio {
                     .map(Recomendacion::getId)
                     .collect(Collectors.toList());
 
+            List<ProductoDTO> productosDTO = usuarioFound.get().getProductosFavoritos().stream().map(producto -> new ProductoDTO(producto.getId(), producto.getTitulo(), producto.getDescripcion())).toList();
 
             usuarioDTO.setId(usuarioFound.get().getId());
             usuarioDTO.setEmail(usuarioFound.get().getEmail());
-            usuarioDTO.setPassword(usuarioFound.get().getPassword());
+            usuarioDTO.setPassword(passwordEncoder.encode(usuarioFound.get().getPassword()));
             usuarioDTO.setName(usuarioFound.get().getName());
             usuarioDTO.setApellido(usuarioFound.get().getApellido());
-            usuarioDTO.setProductosFavoritos(usuarioFound.get().getProductosFavoritos());
+            usuarioDTO.setProductosFavoritos(productosDTO);
             usuarioDTO.setPuntuaciones(puntuacionesIds);
+            usuarioDTO.setRole(usuarioFound.get().getRole());
 
             userDTO = Optional.of(usuarioDTO);
             return userDTO;
@@ -91,8 +101,32 @@ public class UsuarioServicio {
         return usuarioRepository.findAll();
     }
 
-    public Usuario update(Usuario usuario){
-        return usuarioRepository.save(usuario);
+
+    public UsuarioDTO update(Usuario usuario){
+        usuarioRepository.save(usuario);
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+
+        List<Integer> puntuacionesIds = usuario.getPuntuaciones().stream()
+                .map(Recomendacion::getId)
+                .toList();
+
+        List<ProductoDTO> productosFavoritos = new ArrayList<>();
+        if(!usuario.getProductosFavoritos().isEmpty()) {
+            List<ProductoDTO> productosDTO = usuario.getProductosFavoritos().stream().map(producto -> new ProductoDTO(producto.getId(), producto.getTitulo(), producto.getDescripcion())).toList();
+        }
+
+            usuarioDTO.setId(usuario.getId());
+            usuarioDTO.setTipo_usuario(usuario.getRole());
+            usuarioDTO.setName(usuario.getName());
+            usuarioDTO.setApellido(usuario.getApellido());
+            usuarioDTO.setEmail(usuario.getEmail());
+            usuarioDTO.setPassword(passwordEncoder.encode(usuario.getPassword()));
+            usuarioDTO.setRole(usuario.getRole());
+            usuarioDTO.setPuntuaciones(puntuacionesIds);
+            usuarioDTO.setProductosFavoritos(productosFavoritos);
+
+
+        return usuarioDTO;
     }
 
     public Optional<UsuarioDTO> delete(Integer id) throws ResourceNotFoundException {

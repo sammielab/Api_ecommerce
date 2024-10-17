@@ -19,14 +19,17 @@ public class UsuarioDTO {
 
     private String password;
 
-    private List<Producto> productosFavoritos;
+    private List<ProductoDTO> productosFavoritos;
 
     private List<Integer> puntuaciones;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     public UsuarioDTO() {
     }
+
+
 
     public Integer getId() {
         return id;
@@ -76,11 +79,11 @@ public class UsuarioDTO {
         this.email = email;
     }
 
-    public List<Producto> getProductosFavoritos() {
+    public List<ProductoDTO> getProductosFavoritos() {
         return productosFavoritos;
     }
 
-    public void setProductosFavoritos(List<Producto> productosFavoritos) {
+    public void setProductosFavoritos(List<ProductoDTO> productosFavoritos) {
         this.productosFavoritos = productosFavoritos;
     }
 
@@ -90,5 +93,13 @@ public class UsuarioDTO {
 
     public void setPuntuaciones(List<Integer> puntuaciones) {
         this.puntuaciones = puntuaciones;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
