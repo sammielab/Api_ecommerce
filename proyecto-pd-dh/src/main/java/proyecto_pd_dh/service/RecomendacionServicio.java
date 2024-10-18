@@ -3,8 +3,11 @@ package proyecto_pd_dh.service;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import proyecto_pd_dh.dto.ProductoDTO;
 import proyecto_pd_dh.dto.RecomendacionDTO;
+import proyecto_pd_dh.dto.UsuarioDTO;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Recomendacion;
 import proyecto_pd_dh.entities.Usuario;
@@ -33,6 +36,7 @@ public class RecomendacionServicio {
         Usuario usuario = usuarioRepository.findById(recomendacion.getUsuario().getId()).orElseThrow(()-> new ResourceNotFoundException("No se encontro el usuario"));
 
         Recomendacion recomendation = new Recomendacion();
+
         recomendation.setId((recomendacion.getId()));
         recomendation.setProducto(producto);
         recomendation.setUsuario(usuario);
@@ -41,11 +45,16 @@ public class RecomendacionServicio {
         recomendation.setDescripcion(recomendacion.getDescripcion());
 
         recomendacionRepository.save(recomendation);
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setId(usuario.getId());
+
+        ProductoDTO productoDTO = new ProductoDTO();
+        productoDTO.setId(producto.getId());
 
         RecomendacionDTO recomendacionDTO = new RecomendacionDTO();
         recomendacionDTO.setId(recomendation.getId());
-        recomendacionDTO.setUsuario_id(recomendation.getUsuario().getId());
-        recomendacionDTO.setProducto_id(recomendation.getProducto().getId());
+        recomendacionDTO.setUsuario(usuarioDTO);
+        recomendacionDTO.setProducto(productoDTO);
         recomendacionDTO.setDescripcion(recomendacion.getDescripcion());
         recomendacionDTO.setPuntaje_total(recomendacion.getPuntaje_total());
         recomendacionDTO.setFecha_publicacion(recomendacion.getFecha_publicacion());

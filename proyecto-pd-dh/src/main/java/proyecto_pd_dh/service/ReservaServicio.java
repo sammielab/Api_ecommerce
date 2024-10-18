@@ -10,6 +10,7 @@ import proyecto_pd_dh.dto.ReservaDTO;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Recomendacion;
 import proyecto_pd_dh.entities.Reserva;
+import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.repository.IProductoRepository;
 import proyecto_pd_dh.repository.IReservaRepository;
 
@@ -144,6 +145,22 @@ public class ReservaServicio {
         return reservaRepository.findAll();
     }
 
+    public List<ReservaDTO> findAllByIdProduct(Integer id) throws ResourceNotFoundException {
+        List<Reserva> reservasPorProducto = reservaRepository.findByProductoId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontraron reservas con el id " + id));;
+
+
+            List<ReservaDTO> reservaDTOS = reservasPorProducto.stream().map(res -> new ReservaDTO(
+                    res.getId(),
+                    res.getCheck_in(),
+                    res.getCheck_out(),
+                    res.getFecha_reserva()
+            )).toList();
+
+            return reservaDTOS;
+
+
+    }
     public Reserva update(Reserva reserva){
         return reservaRepository.save(reserva);
     }

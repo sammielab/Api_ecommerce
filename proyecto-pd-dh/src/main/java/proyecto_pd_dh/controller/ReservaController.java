@@ -9,6 +9,7 @@ import proyecto_pd_dh.dto.ProductoDTO;
 import proyecto_pd_dh.dto.ReservaDTO;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Reserva;
+import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.service.ProductoServicio;
 import proyecto_pd_dh.service.ReservaServicio;
 
@@ -67,6 +68,12 @@ public class ReservaController {
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Optional.empty());
         }
+    }
+
+    @GetMapping("/producto/{productoId}")
+    public ResponseEntity<List<ReservaDTO>> obtenerReservasPorProductoId(@PathVariable Integer productoId) throws ResourceNotFoundException {
+        List<ReservaDTO> reservas = reservaServicio.findAllByIdProduct(productoId);
+        return ResponseEntity.ok(reservas);
     }
 
     @GetMapping("/findAll")

@@ -18,6 +18,10 @@ public class ProductoDTO {
 
     public ProductoDTO(){};
 
+    public ProductoDTO(Integer id) {
+        this.id = id;
+    }
+
     public ProductoDTO(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, Double precio, List<RecomendacionDTO> recomendaciones, Categoria categoria) {
         this.id = id;
         this.titulo = titulo;
@@ -32,6 +36,13 @@ public class ProductoDTO {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
+    }
+
+    public ProductoDTO(Integer id, String titulo, String descripcion, Double precio) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.precio = precio;
     }
 
     public Integer getId() {

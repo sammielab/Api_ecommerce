@@ -9,6 +9,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import proyecto_pd_dh.dto.ProductoDTO;
 import proyecto_pd_dh.dto.RecomendacionDTO;
+import proyecto_pd_dh.dto.UsuarioDTO;
 import proyecto_pd_dh.entities.Caracteristica;
 import proyecto_pd_dh.entities.Producto;
 import proyecto_pd_dh.entities.Recomendacion;
@@ -64,13 +65,21 @@ public class ProductoServicio {
             List<RecomendacionDTO> recomendacionesMapp = productoFound.get().getRecomendaciones()
                     .stream()
                     .map(recomendacion -> {
+                        UsuarioDTO usuarioDTO = new UsuarioDTO();
+                        usuarioDTO.setId(recomendacion.getUsuario().getId());
+
+                        ProductoDTO productoDTORec = new ProductoDTO();
+                        productoDTORec.setId(recomendacion.getProducto().getId());
+
+
+
                         RecomendacionDTO rec = new RecomendacionDTO();
                         rec.setId(recomendacion.getId());
                         rec.setPuntaje_total(recomendacion.getPuntaje_total());
                         rec.setDescripcion(recomendacion.getDescripcion());
                         rec.setFecha_publicacion(recomendacion.getFecha_publicacion());
-                        rec.setProducto_id(recomendacion.getProducto().getId());
-                        rec.setUsuario_id(recomendacion.getUsuario().getId());
+                        rec.setProducto(productoDTORec);
+                        rec.setUsuario(usuarioDTO);
                         return rec;
                     })
                     .toList();

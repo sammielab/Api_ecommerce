@@ -77,6 +77,20 @@ public class Usuario implements UserDetails {
     }
 
 
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", productosFavoritos=" + productosFavoritos +
+                ", reservas=" + reservas +
+                ", puntuaciones=" + puntuaciones +
+                ", role=" + role +
+                '}';
+    }
 
     public Role getRole() {
         return role;

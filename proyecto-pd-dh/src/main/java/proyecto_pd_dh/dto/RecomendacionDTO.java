@@ -16,14 +16,30 @@ public class RecomendacionDTO {
 
     private String descripcion;
 
-    private Integer producto_id;
+    private ProductoDTO producto;
 
-    private Integer usuario_id;
+    private UsuarioDTO usuario;
 
     public RecomendacionDTO(){};
 
     public RecomendacionDTO(Integer id) {
         this.id = id;
+    }
+
+    public RecomendacionDTO(Integer id, double puntaje_total, Date fecha_publicacion, String descripcion) {
+        this.id = id;
+        this.puntaje_total = puntaje_total;
+        this.fecha_publicacion = fecha_publicacion;
+        this.descripcion = descripcion;
+    }
+
+    public RecomendacionDTO(Integer id, double puntaje_total, Date fecha_publicacion, String descripcion, ProductoDTO producto, UsuarioDTO usuario) {
+        this.id = id;
+        this.puntaje_total = puntaje_total;
+        this.fecha_publicacion = fecha_publicacion;
+        this.descripcion = descripcion;
+        this.producto = producto;
+        this.usuario = usuario;
     }
 
     public Integer getId() {
@@ -58,19 +74,19 @@ public class RecomendacionDTO {
         this.descripcion = descripcion;
     }
 
-    public Integer getProducto_id() {
-        return producto_id;
+    public ProductoDTO getProducto() {
+        return producto;
     }
 
-    public void setProducto_id(Integer producto_id) {
-        this.producto_id = producto_id;
+    public void setProducto(ProductoDTO producto) {
+        this.producto = producto;
     }
 
-    public Integer getUsuario_id() {
-        return usuario_id;
+    public UsuarioDTO getUsuario() {
+        return usuario;
     }
 
-    public void setUsuario_id(Integer usuario_id) {
-        this.usuario_id = usuario_id;
+    public void setUsuario(UsuarioDTO usuario) {
+        this.usuario = usuario;
     }
 }

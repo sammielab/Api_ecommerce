@@ -26,6 +26,12 @@ public class ReservaDTO {
 
     public ReservaDTO(){}
 
+    public ReservaDTO(Integer id, LocalDate check_in, LocalDate check_out, LocalDate fecha_reserva) {
+        this.id = id;
+        this.check_in = check_in;
+        this.check_out = check_out;
+        this.fecha_reserva = fecha_reserva;
+    }
 
     public Integer getId() {
         return id;

@@ -21,7 +21,7 @@ public class UsuarioDTO {
 
     private List<ProductoDTO> productosFavoritos;
 
-    private List<Integer> puntuaciones;
+    private List<RecomendacionDTO> puntuaciones;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -29,7 +29,9 @@ public class UsuarioDTO {
     public UsuarioDTO() {
     }
 
-
+    public UsuarioDTO(Integer id) {
+        this.id = id;
+    }
 
     public Integer getId() {
         return id;
@@ -87,11 +89,11 @@ public class UsuarioDTO {
         this.productosFavoritos = productosFavoritos;
     }
 
-    public List<Integer> getPuntuaciones() {
+    public List<RecomendacionDTO> getPuntuaciones() {
         return puntuaciones;
     }
 
-    public void setPuntuaciones(List<Integer> puntuaciones) {
+    public void setPuntuaciones(List<RecomendacionDTO> puntuaciones) {
         this.puntuaciones = puntuaciones;
     }
 

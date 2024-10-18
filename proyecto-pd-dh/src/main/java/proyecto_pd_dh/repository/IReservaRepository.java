@@ -16,4 +16,5 @@ public interface IReservaRepository extends JpaRepository<Reserva, Integer> {
     )
     Optional<List<Integer>> findUnavaibleProducts(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
     Optional<List<Reserva>> findByUsuarioId(Integer id);
+    Optional<List<Reserva>> findByProductoId(Integer productoId);
 }

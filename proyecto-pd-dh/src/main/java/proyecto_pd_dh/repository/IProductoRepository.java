@@ -7,6 +7,7 @@ import proyecto_pd_dh.entities.Producto;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +17,6 @@ public interface IProductoRepository extends JpaRepository<Producto, Integer>, P
 
     @Query("SELECT p FROM Producto p WHERE p.id NOT IN :ids")
     List<Producto> findProductsNotInIds(@Param("ids") Optional<List<Integer>> ids);
+
+
 }
