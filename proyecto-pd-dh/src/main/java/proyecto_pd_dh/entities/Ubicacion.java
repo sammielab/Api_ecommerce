@@ -25,8 +25,31 @@ public class Ubicacion {
     @Column(name = "ciudades")
     private String ciudad;
 
-    @Column(name = "productos")
     @OneToMany(mappedBy = "ubicacion")
     private List<Producto> productos;
 
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public List<Producto> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Producto> productos) {
+        this.productos = productos;
+    }
 }

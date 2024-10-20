@@ -137,8 +137,8 @@ public class UsuarioServicio {
                                 recomendacion.getPuntaje_total(),
                                 recomendacion.getFecha_publicacion(),
                                 recomendacion.getDescripcion(),
-                                new ProductoDTO(recomendacion.getProducto().getId()), // Asegúrate de mapear todos los atributos relevantes de Producto.
-                                new UsuarioDTO(recomendacion.getUsuario().getId()) // Mapear el usuario
+                                new ProductoDTO(recomendacion.getProducto().getId()),
+                                new UsuarioDTO(recomendacion.getUsuario().getId())
                         ))
                         .toList();
                 usuarioDTO.setPuntuaciones(puntuacionesDTO);

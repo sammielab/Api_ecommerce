@@ -24,7 +24,6 @@ public class Reserva {
 
     @ManyToOne
     @JoinColumn(name = "producto_id", nullable = false)
-
     private Producto producto;
 
     @ManyToOne
@@ -42,6 +41,8 @@ public class Reserva {
 
     @Column(name = "estado")
     private String estado;
+
+
 
     public Integer getId() {
         return id;

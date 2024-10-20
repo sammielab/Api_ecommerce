@@ -18,6 +18,10 @@ public class Categoria {
     @Column(name = "titulo")
     private String titulo;
 
+    @Column(name = "imagen")
+    @Lob
+    private byte[] imagen;
+
 
 
 
