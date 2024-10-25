@@ -7,13 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import proyecto_pd_dh.dto.IMGDTO;
 import proyecto_pd_dh.dto.ProductoDTO;
 import proyecto_pd_dh.dto.RecomendacionDTO;
 import proyecto_pd_dh.dto.UsuarioDTO;
-import proyecto_pd_dh.entities.Caracteristica;
-import proyecto_pd_dh.entities.Producto;
-import proyecto_pd_dh.entities.Recomendacion;
-import proyecto_pd_dh.entities.Usuario;
+import proyecto_pd_dh.entities.*;
 import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.repository.IProductoRepository;
 
@@ -31,36 +29,59 @@ public class ProductoServicio {
 
     @Autowired
     private final CaracteristicasServicio caracteristicasServicio;
+    @Autowired
+    private final CategoriaServicio categoriaServicio;
+    @Autowired
+    private final ImgServicio imgServicio;
 
-    public ProductoServicio(CaracteristicasServicio caracteristicasServicio) {
+    public ProductoServicio(CaracteristicasServicio caracteristicasServicio, CategoriaServicio categoriaServicio, ImgServicio imgServicio) {
         this.caracteristicasServicio = caracteristicasServicio;
+        this.categoriaServicio = categoriaServicio;
+        this.imgServicio = imgServicio;
     }
 
 
-    public Producto save(Producto producto){
+    public Producto save(Producto producto) throws Exception {
+        try{
+
+        if (producto.getCategoria() != null) {
+            Categoria categoria = categoriaServicio.findById(producto.getCategoria().getId())
+                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+            producto.setCategoria(categoria);
+        }
 
             if(producto.getCaracteristicas() != null){
                 List<Caracteristica> caracteristicas = new ArrayList<>();
                 for(Caracteristica caracteristica : producto.getCaracteristicas()){
                     Caracteristica existingCaracteristica = caracteristicasServicio.findById(caracteristica.getId())
-                            .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
+                            .orElseThrow(() -> new RuntimeException("Caracteristica no encontrada"));
                     caracteristicas.add(existingCaracteristica);
                 }
                 producto.setCaracteristicas(caracteristicas);
 
             }
             return productoRepository.save(producto);
-
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
         }
 
 
-    public Optional<ProductoDTO> findById(Integer id) throws ResourceNotFoundException {
+    public Optional<ProductoDTO> findById(Integer id) throws Exception {
 
         Optional<Producto> productoFound = productoRepository.findById(id);
         Optional<ProductoDTO> productoReturn;
 
         if(productoFound.isPresent()){
             ProductoDTO productoDTO = new ProductoDTO();
+
+            Optional<List<IMGDTO>> imgFound = imgServicio.findByIdProducto(id);
+            if(imgFound.isPresent()){
+                List<IMGDTO> imgdtos =  imgFound.get().stream()
+                        .map(img -> new IMGDTO(img.getImagen()))
+                        .toList();
+                productoDTO.setImgdtos(imgdtos);
+            }
 
             List<RecomendacionDTO> recomendacionesMapp = productoFound.get().getRecomendaciones()
                     .stream()
@@ -70,7 +91,6 @@ public class ProductoServicio {
 
                         ProductoDTO productoDTORec = new ProductoDTO();
                         productoDTORec.setId(recomendacion.getProducto().getId());
-
 
 
                         RecomendacionDTO rec = new RecomendacionDTO();
@@ -90,7 +110,8 @@ public class ProductoServicio {
             productoDTO.setCaracteristicas(productoFound.get().getCaracteristicas());
             productoDTO.setDescripcion(productoFound.get().getDescripcion());
             productoDTO.setRecomendaciones(recomendacionesMapp);
-            productoDTO.setCategoria(productoFound.get().getCategoria());
+            productoDTO.setCategoria(productoFound.get().getCategoria().getId());
+            productoDTO.setPoliticas(productoFound.get().getPoliticas());
 
             productoReturn = Optional.of(productoDTO);
             return productoReturn;
@@ -99,29 +120,48 @@ public class ProductoServicio {
         }
     }
 
-    public List<ProductoDTO> findAll() throws ResourceNotFoundException {
-
+    public List<ProductoDTO> findAll() throws Exception {
+    try {
         List<Producto> productos = productoRepository.findAll();
         List<ProductoDTO> productoDTOS = new ArrayList<>();
-        if(!productos.isEmpty()){
-            for(Producto p : productos){
+
+
+        if (!productos.isEmpty()) {
+            for (Producto p : productos) {
+                System.out.print(p);
                 ProductoDTO pDTO = new ProductoDTO();
+
+                Optional<List<IMGDTO>> imgFound = imgServicio.findByIdProducto(p.getId());
+                if(imgFound.isPresent()){
+                    List<IMGDTO> imgdtos =  imgFound.get().stream()
+                            .map(img -> new IMGDTO(img.getImagen()))
+                            .toList();
+                    pDTO.setImgdtos(imgdtos);
+                }
+
+                for(IMGDTO img: pDTO.getImgdtos()){
+                    System.out.print(img);
+                }
 
                 pDTO.setId(p.getId());
                 pDTO.setTitulo(p.getTitulo());
                 pDTO.setDescripcion(p.getDescripcion());
                 pDTO.setCaracteristicas(p.getCaracteristicas());
-                pDTO.setCategoria(p.getCategoria());
+                pDTO.setCategoria(p.getCategoria().getId());
                 pDTO.setPrecio(p.getPrecio());
+
 
                 productoDTOS.add(pDTO);
 
             }
 
             return productoDTOS;
-        }else{
+        } else {
             throw new ResourceNotFoundException("No se encontraron productos disponibles");
         }
+    }catch(Exception e){
+        throw new Exception(e.getMessage());
+    }
     };
 
     public List<ProductoDTO> getAll(int page, int limit){
@@ -150,7 +190,7 @@ public class ProductoServicio {
                     productoDTO.setPrecio(producto.getPrecio());
                     productoDTO.setCaracteristicas(producto.getCaracteristicas());
                     productoDTO.setDescripcion(producto.getDescripcion());
-                    productoDTO.setCategoria(producto.getCategoria());
+                    productoDTO.setCategoria(producto.getCategoria().getId());
                     return productoDTO;
                 })
                 .toList(); // Recolectamos en una lista

@@ -9,7 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import javax.persistence.NamedEntityGraph;
 
+import java.util.ArrayList;
 import java.util.List;
 @Data
 @Builder
@@ -17,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "productos")
+
 public class Producto {
 
     @Id
@@ -49,6 +52,8 @@ public class Producto {
     private Categoria categoria;
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JsonIgnore
     private List<Reserva> reservas;
 
     @ManyToMany(mappedBy = "productosFavoritos")
@@ -58,8 +63,36 @@ public class Producto {
     @JoinColumn(name = "ubicacion_id")
     private Ubicacion ubicacion;
 
+    @Column(name= "politicas")
+    private List<String> politicas;
 
+    public Producto(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, Double precio, List<Recomendacion> recomendaciones, Categoria categoria, List<Reserva> reservas, List<Usuario> usuarios, Ubicacion ubicacion, List<String> politicas) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.caracteristicas = caracteristicas;
+        this.precio = precio;
+        this.recomendaciones = recomendaciones;
+        this.categoria = categoria;
+        this.reservas = reservas;
+        this.usuarios = usuarios;
+        this.ubicacion = ubicacion;
+        this.politicas = politicas;
+    }
 
+    public Producto(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, Double precio, List<Recomendacion> recomendaciones, Categoria categoria, List<Reserva> reservas, List<Usuario> usuarios, Ubicacion ubicacion) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.caracteristicas = caracteristicas;
+        this.precio = precio;
+        this.recomendaciones = recomendaciones;
+        this.categoria = categoria;
+        this.reservas = reservas;
+        this.usuarios = usuarios;
+        this.ubicacion = ubicacion;
+
+    }
 
     public Producto(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, Double precio, List<Recomendacion> recomendaciones, Catalogo catalogo, Categoria categoria, List<Usuario> usuarios) {
         this.id = id;
@@ -84,6 +117,22 @@ public class Producto {
         this.descripcion = descripcion;
     }
 
+
+    public List<String> getPoliticas() {
+        return politicas;
+    }
+
+    public void setPoliticas(List<String> politicas) {
+        this.politicas = politicas;
+    }
+
+    public Ubicacion getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(Ubicacion ubicacion) {
+        this.ubicacion = ubicacion;
+    }
 
     public List<Reserva> getReservas() {
         return reservas;

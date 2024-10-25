@@ -14,7 +14,9 @@ public class ProductoDTO {
     private List<Caracteristica> caracteristicas;
     private Double precio;
     private List<RecomendacionDTO> recomendaciones;
-    private Categoria categoria;
+    private Integer categoria;
+    private List<IMGDTO> imgdtos;
+    private List<String> politicas;
 
     public ProductoDTO(){};
 
@@ -28,7 +30,7 @@ public class ProductoDTO {
         this.descripcion = descripcion;
     }
 
-    public ProductoDTO(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, Double precio, List<RecomendacionDTO> recomendaciones, Categoria categoria) {
+    public ProductoDTO(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, Double precio, List<RecomendacionDTO> recomendaciones, Integer categoria) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -38,13 +40,39 @@ public class ProductoDTO {
         this.categoria = categoria;
     }
 
-
+    public ProductoDTO(Integer id, String titulo, String descripcion, List<Caracteristica> caracteristicas, Double precio, List<RecomendacionDTO> recomendaciones, Integer categoria, List<IMGDTO> imgdtos, List<String> politicas) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.caracteristicas = caracteristicas;
+        this.precio = precio;
+        this.recomendaciones = recomendaciones;
+        this.categoria = categoria;
+        this.imgdtos = imgdtos;
+        this.politicas = politicas;
+    }
 
     public ProductoDTO(Integer id, String titulo, String descripcion, Double precio) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.precio = precio;
+    }
+
+    public List<String> getPoliticas() {
+        return politicas;
+    }
+
+    public void setPoliticas(List<String> politicas) {
+        this.politicas = politicas;
+    }
+
+    public List<IMGDTO> getImgdtos() {
+        return imgdtos;
+    }
+
+    public void setImgdtos(List<IMGDTO> imgdtos) {
+        this.imgdtos = imgdtos;
     }
 
     public Integer getId() {
@@ -96,11 +124,11 @@ public class ProductoDTO {
         this.recomendaciones = recomendaciones;
     }
 
-    public Categoria getCategoria() {
+    public Integer getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(Categoria categoria) {
+    public void setCategoria(Integer categoria) {
         this.categoria = categoria;
     }
 }

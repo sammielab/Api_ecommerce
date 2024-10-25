@@ -27,7 +27,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse>login(@RequestBody LoginRequest loginRequest){
-        return ResponseEntity.ok(authenticationService.login(loginRequest));
+    public ResponseEntity<AuthenticationResponse>login(@RequestBody LoginRequest loginRequest) throws Exception {
+        try{
+            System.out.println("Login Request: " + loginRequest);
+            return ResponseEntity.ok(authenticationService.login(loginRequest));
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+
     }
 }

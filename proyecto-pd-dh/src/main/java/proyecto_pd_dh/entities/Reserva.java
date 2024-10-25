@@ -24,6 +24,7 @@ public class Reserva {
 
     @ManyToOne
     @JoinColumn(name = "producto_id", nullable = false)
+    @JsonBackReference
     private Producto producto;
 
     @ManyToOne

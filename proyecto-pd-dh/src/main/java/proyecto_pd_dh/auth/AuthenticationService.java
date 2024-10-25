@@ -75,22 +75,30 @@ public class AuthenticationService {
     }
 
 
-    public AuthenticationResponse login(LoginRequest loginRequest){
+    public AuthenticationResponse login(LoginRequest loginRequest) throws Exception {
         //Delegamos al authentication manager
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
 
-        );
-                var user = usuarioRepository.findByEmail(loginRequest.getEmail())
-                        .orElseThrow();
+            System.out.println(loginRequest);
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                    )
 
-        var jwt = jwtService.generateToken(user);
+            );
+            var user = usuarioRepository.findByEmail(loginRequest.getEmail())
+                    .orElseThrow();
+            System.out.println("Usuario:" + user);
 
-        return AuthenticationResponse.builder()
-                .token(jwt)
-                .build();
+            Usuario userJWT = new Usuario(user.getEmail(), user.getPassword());
+
+            var jwt = jwtService.generateToken(userJWT);
+            System.out.println("jwt: " + jwt);
+
+            return AuthenticationResponse.builder()
+                    .token(jwt)
+                    .build();
+
+
     }
 }

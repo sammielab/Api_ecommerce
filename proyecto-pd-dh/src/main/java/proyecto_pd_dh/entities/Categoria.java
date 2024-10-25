@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,21 +19,28 @@ public class Categoria {
     @Column(name = "titulo")
     private String titulo;
 
-    @Column(name = "imagen")
     @Lob
-    private byte[] imagen;
+    @Column(name = "imagen", columnDefinition = "MEDIUMTEXT")
+    private String imagen;
 
 
-
-
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Producto> productos = new ArrayList<>();
 
     public Categoria(){}
+
+    public Categoria(Integer id){}
 
     public Categoria(Integer id, String titulo) {
         this.id = id;
         this.titulo = titulo;
     }
 
+    public Categoria(Integer id, String titulo, String imagen) {
+        this.id = id;
+        this.titulo = titulo;
+        this.imagen = imagen;
+    }
 
     public Categoria(String titulo) {
         this.titulo = titulo;
@@ -52,5 +60,13 @@ public class Categoria {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 }

@@ -76,6 +76,10 @@ public class Usuario implements UserDetails {
         setProductosFavoritos(productosFavoritos);
     }
 
+    public Usuario(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     @Override
     public String toString() {

@@ -204,7 +204,7 @@ public class UsuarioServicio {
             usuarioDTO.setName(usuario.getName());
             usuarioDTO.setApellido(usuario.getApellido());
             usuarioDTO.setEmail(usuario.getEmail());
-            usuarioDTO.setPassword(passwordEncoder.encode(usuario.getPassword()));
+            usuarioDTO.setPassword(usuario.getPassword());
             usuarioDTO.setRole(usuario.getRole());
             usuarioDTO.setProductosFavoritos(productosFavoritos);
 

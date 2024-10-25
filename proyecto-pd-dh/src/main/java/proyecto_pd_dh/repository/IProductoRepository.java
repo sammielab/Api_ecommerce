@@ -1,5 +1,6 @@
 package proyecto_pd_dh.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +15,10 @@ import java.util.Optional;
 
 @Repository
 public interface IProductoRepository extends JpaRepository<Producto, Integer>, PagingAndSortingRepository<Producto, Integer> {
+
+
+    List<Producto> findAll();
+
     List<Producto> findByCaracteristicas_Id(Integer id);
 
     @Query("SELECT p FROM Producto p WHERE p.id NOT IN :ids")
@@ -34,5 +39,8 @@ public interface IProductoRepository extends JpaRepository<Producto, Integer>, P
     List<Producto> findAvailableProductos(@Param("ciudad") String ciudad,
                                           @Param("checkin") LocalDate checkin,
                                           @Param("checkout") LocalDate checkout);
+
+
+
 
 }

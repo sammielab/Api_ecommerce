@@ -83,7 +83,7 @@ public class ReservaServicio {
 
                     productoDTO.setId(product.getId());
                     productoDTO.setTitulo(product.getTitulo());
-                    productoDTO.setCategoria(product.getCategoria());
+                    productoDTO.setCategoria(product.getCategoria().getId());
                     productoDTO.setDescripcion(product.getDescripcion());
                     productoDTO.setCaracteristicas(product.getCaracteristicas());
                     productoDTO.setPrecio(product.getPrecio());

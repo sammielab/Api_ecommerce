@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import proyecto_pd_dh.entities.Categoria;
 import proyecto_pd_dh.entities.Recomendacion;
 import proyecto_pd_dh.service.CategoriaServicio;
@@ -24,9 +25,11 @@ public class CategoriaController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Categoria categoria ){
+    public ResponseEntity<?> save(
+            @RequestParam("imagen") MultipartFile imagen,
+            @RequestParam String titulo ){
         try{
-            Categoria savedCategoria = categoriaServicio.save(categoria);
+            Categoria savedCategoria = categoriaServicio.save(imagen, titulo);
             return ResponseEntity.ok(savedCategoria);
 
         }catch(Exception e){
