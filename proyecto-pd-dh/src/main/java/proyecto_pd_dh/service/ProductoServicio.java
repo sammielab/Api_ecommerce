@@ -3,18 +3,17 @@ package proyecto_pd_dh.service;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import proyecto_pd_dh.dto.IMGDTO;
-import proyecto_pd_dh.dto.ProductoDTO;
-import proyecto_pd_dh.dto.RecomendacionDTO;
-import proyecto_pd_dh.dto.UsuarioDTO;
+import proyecto_pd_dh.dto.*;
 import proyecto_pd_dh.entities.*;
 import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.repository.IProductoRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,11 +32,14 @@ public class ProductoServicio {
     private final CategoriaServicio categoriaServicio;
     @Autowired
     private final ImgServicio imgServicio;
+    @Autowired
+    private final UbicacionesServicio ubicacionesServicio;
 
-    public ProductoServicio(CaracteristicasServicio caracteristicasServicio, CategoriaServicio categoriaServicio, ImgServicio imgServicio) {
+    public ProductoServicio(CaracteristicasServicio caracteristicasServicio, CategoriaServicio categoriaServicio, ImgServicio imgServicio, UbicacionesServicio ubicacionesServicio) {
         this.caracteristicasServicio = caracteristicasServicio;
         this.categoriaServicio = categoriaServicio;
         this.imgServicio = imgServicio;
+        this.ubicacionesServicio = ubicacionesServicio;
     }
 
 
@@ -60,6 +62,15 @@ public class ProductoServicio {
                 producto.setCaracteristicas(caracteristicas);
 
             }
+
+            if(producto.getUbicacion() != null){
+                Ubicacion ubicacion = ubicacionesServicio.findById(producto.getUbicacion().getId());
+
+                producto.setUbicacion(ubicacion);
+            }
+
+
+
             return productoRepository.save(producto);
         }catch(Exception e){
             throw new Exception(e.getMessage());
@@ -207,4 +218,59 @@ public class ProductoServicio {
         productoRepository.deleteById(id);
     }
 
+    public List<ProductoDTO> findProductoByCategoriaId (List<Integer> categorias) throws Exception {
+        try{
+
+            List<Producto> productosPorCategoria = productoRepository.findByCategoriaIdIn(categorias);
+            System.out.print(productosPorCategoria);
+            if(!productosPorCategoria.isEmpty()){
+                List<ProductoDTO> productosPorCategoriaDTO = productosPorCategoria.stream()
+                        .map(producto -> {
+                            ProductoDTO productoDTO = new ProductoDTO();
+                            productoDTO.setId(producto.getId());
+                            productoDTO.setTitulo(producto.getTitulo());
+                            productoDTO.setDescripcion(producto.getDescripcion());
+                            productoDTO.setCaracteristicas(producto.getCaracteristicas());
+                            productoDTO.setPrecio(producto.getPrecio());
+                            productoDTO.setCategoria(producto.getCategoria().getId());
+                            return productoDTO;
+                        })
+                        .toList();
+
+                System.out.print(productosPorCategoriaDTO);
+                return productosPorCategoriaDTO;
+            }else{
+                throw new ResourceNotFoundException("No se encontraron productos para las categorias");
+
+            }
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public List<ProductoDTO> findFilteredProductos(String ciudad, LocalDate checkin, LocalDate checkout){
+       try {
+           List<Producto> productos = productoRepository.findAvailableProductos(ciudad, checkin, checkout);
+           if(!productos.isEmpty()){
+           List<ProductoDTO> productosDTO = productos.stream()
+                   .map(producto -> {
+                       ProductoDTO productoDTO = new ProductoDTO();
+                       productoDTO.setId(producto.getId());
+                       productoDTO.setTitulo(producto.getTitulo());
+                       productoDTO.setPrecio(producto.getPrecio());
+                       productoDTO.setCaracteristicas(producto.getCaracteristicas());
+                       productoDTO.setDescripcion(producto.getDescripcion());
+                       productoDTO.setCategoria(producto.getCategoria().getId());
+                       return productoDTO;
+                   })
+                   .toList();
+
+           return productosDTO;
+           }else{
+               throw new ResourceNotFoundException("No se encontraron productos disponibles");
+           }
+       }catch(Exception e){
+           throw new RuntimeException(e.getMessage());
+       }
+    }
 }

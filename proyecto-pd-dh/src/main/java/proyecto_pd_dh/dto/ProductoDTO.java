@@ -59,6 +59,7 @@ public class ProductoDTO {
         this.precio = precio;
     }
 
+
     public List<String> getPoliticas() {
         return politicas;
     }

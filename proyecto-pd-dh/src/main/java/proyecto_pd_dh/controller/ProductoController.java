@@ -14,6 +14,7 @@ import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.service.ProductoServicio;
 import proyecto_pd_dh.service.UsuarioServicio;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -107,5 +108,31 @@ public class ProductoController {
         }
     }
 
+    @PostMapping("/findByCategoryId")
+    public ResponseEntity<?> findByCategoryId(@RequestBody List<Integer> categorias){
+
+        try{
+            List<ProductoDTO> productos = productoServicio.findProductoByCategoriaId(categorias);
+            return ResponseEntity.ok(productos);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error" + e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/findFilteredProducts")
+    public ResponseEntity<?> findFilteredProducts(@RequestParam String ciudad,
+                                                    @RequestParam LocalDate checkin,
+                                                    @RequestParam LocalDate checkout
+                                                  )
+    {
+        System.out.println("ciudad: " + ciudad);
+        try{
+            List<ProductoDTO> productos = productoServicio.findFilteredProductos(ciudad, checkin, checkout);
+            return ResponseEntity.ok(productos);
+        }catch (Exception e ){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error" + e.getMessage());
+        }
+    };
 
 }

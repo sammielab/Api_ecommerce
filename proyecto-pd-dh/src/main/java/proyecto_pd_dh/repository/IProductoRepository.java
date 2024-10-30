@@ -41,6 +41,7 @@ public interface IProductoRepository extends JpaRepository<Producto, Integer>, P
                                           @Param("checkout") LocalDate checkout);
 
 
+    List<Producto> findByCategoriaIdIn(List<Integer> categoriaIds);
 
 
 }

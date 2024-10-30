@@ -1,6 +1,7 @@
 package proyecto_pd_dh.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +26,8 @@ public class Ubicacion {
     @Column(name = "ciudades")
     private String ciudad;
 
-    @OneToMany(mappedBy = "ubicacion")
+    @OneToMany(mappedBy = "ubicacion", cascade = CascadeType.ALL )
+    @JsonIgnore
     private List<Producto> productos;
 
 

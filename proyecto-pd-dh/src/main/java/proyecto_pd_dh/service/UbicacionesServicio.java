@@ -1,8 +1,6 @@
 package proyecto_pd_dh.service;
 
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +9,6 @@ import proyecto_pd_dh.dto.UbicacionDTO;
 import proyecto_pd_dh.entities.Ubicacion;
 import proyecto_pd_dh.exception.ResourceNotFoundException;
 import proyecto_pd_dh.repository.IUbicacionesRepository;
-import proyecto_pd_dh.repository.IUsuarioRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,17 +28,17 @@ public class UbicacionesServicio {
 
         UbicacionDTO ubicacionDTO = new UbicacionDTO();
 
-        List<ProductoDTO> productosDTO = ubicacion.getProductos()
-                .stream()
-                .map(producto -> new ProductoDTO(
-                                producto.getId(),
-                                producto.getTitulo(),
-                                producto.getDescripcion()))
-                .toList();
+       // List<ProductoDTO> productosDTO = ubicacion.getProductos()
+         //       .stream()
+        //      .map(producto -> new ProductoDTO(
+        //                      producto.getId(),
+        //                        producto.getTitulo(),
+        //                       producto.getDescripcion()))
+        //       .toList();
 
         ubicacionDTO.setId(ubicacion.getId());
         ubicacionDTO.setCiudad(ubicacion.getCiudad());
-        ubicacionDTO.setProductosDTO(productosDTO);
+
 
         return ubicacionDTO;
 
@@ -80,5 +77,16 @@ public class UbicacionesServicio {
     public List<String> findByCiudadPattern(String pattern){
        List<String> ciudades =  ubicacionesRepository.findByCiudadPattern(pattern);
        return ciudades;
+    }
+
+
+    public Ubicacion findById(Integer id) throws ResourceNotFoundException {
+        Optional<Ubicacion> ubicacion = ubicacionesRepository.findById(id);
+
+        if(ubicacion.isPresent()){
+            return ubicacion.get();
+        }else{
+            throw new ResourceNotFoundException("No se encuentra la ubicacion con id: " + id);
+        }
     }
 }
